@@ -102,7 +102,7 @@ COPY ".docker/app/php-${APP_ENV}.ini" /usr/local/etc/php/conf.d/php.ini
 COPY .docker/app/config.json /docker-entrypoint.d/config.json
 COPY .docker/app/entrypoint.sh /docker-entrypoint.d/entrypoint.sh
 COPY . /var/www/html
-COPY --from=composer-builder /build .
+COPY --from=composer-builder --chown=unit:unit /build .
 
 # Update package lists and install required dependencies
 RUN apt-get update && \

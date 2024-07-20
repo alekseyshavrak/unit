@@ -12,40 +12,43 @@ services:
             - 'host.docker.internal:host-gateway'
         tmpfs:
             - /run:uid=101,gid=101
+        depends_on:
+            - mysql
+            - redis
         networks:
             - mosdev
-#    mysql:
-#        container_name: mysql
-#        build:
-#            context: .
-#            dockerfile: .docker/mysql/Dockerfile
-#        restart: unless-stopped
-#        ports:
-#            - '${FORWARD_DB_PORT:-3306}:3306'
-#        environment:
-#            MYSQL_ROOT_PASSWORD: '${DB_PASSWORD}'
-#            MYSQL_ROOT_HOST: '%'
-#            MYSQL_DATABASE: '${DB_DATABASE}'
-#            MYSQL_USER: '${DB_USERNAME}'
-#            MYSQL_PASSWORD: '${DB_PASSWORD}'
-#            MYSQL_ALLOW_EMPTY_PASSWORD: 1
-#        networks:
-#            - mosdev
-#        healthcheck:
-#            test: [ 'CMD', 'mysqladmin', 'ping', '-p${DB_PASSWORD}' ]
-#            retries: 3
-#            timeout: 5s
-#    redis:
-#        container_name: redis
-#        image: 'redis:alpine'
-#        ports:
-#            - '${FORWARD_REDIS_PORT:-6379}:6379'
-#        networks:
-#            - mosdev
-#        healthcheck:
-#            test: ['CMD', 'redis-cli', 'ping']
-#            retries: 3
-#            timeout: 5s
+    mysql:
+        container_name: mysql
+        build:
+            context: .
+            dockerfile: .docker/mysql/Dockerfile
+        restart: unless-stopped
+        ports:
+            - '${FORWARD_DB_PORT:-3306}:3306'
+        environment:
+            MYSQL_ROOT_PASSWORD: '${DB_PASSWORD}'
+            MYSQL_ROOT_HOST: '%'
+            MYSQL_DATABASE: '${DB_DATABASE}'
+            MYSQL_USER: '${DB_USERNAME}'
+            MYSQL_PASSWORD: '${DB_PASSWORD}'
+            MYSQL_ALLOW_EMPTY_PASSWORD: 1
+        networks:
+            - mosdev
+        healthcheck:
+            test: [ 'CMD', 'mysqladmin', 'ping', '-p${DB_PASSWORD}' ]
+            retries: 3
+            timeout: 5s
+    redis:
+        container_name: redis
+        image: 'redis:alpine'
+        ports:
+            - '${FORWARD_REDIS_PORT:-6379}:6379'
+        networks:
+            - mosdev
+        healthcheck:
+            test: ['CMD', 'redis-cli', 'ping']
+            retries: 3
+            timeout: 5s
 networks:
     mosdev:
         driver: bridge
